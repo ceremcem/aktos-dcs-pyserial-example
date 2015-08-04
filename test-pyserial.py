@@ -24,6 +24,10 @@ class SerialPortReader(Actor):
         except serial.SerialException, e:
             print 'event:error\n' + 'data:' + 'Serial port error({0}): {1}\n\n'.format(e.errno, e.strerror)
 
+    def handle_SerialPortMessage(self, msg):
+        if msg.data:
+            self.ser.write(msg.data)
+
     def action(self):
         print "started reading serial port..."
         try:
@@ -48,6 +52,7 @@ class SerialPortReader(Actor):
 class TestActor(Actor):
     def handle_SerialPortMessage(self, msg):
         print "test got serial port data: ", msg.data
+        self.send(SerialPortMessage(data='hello from test and data back: ' + msg.data))
 
 
 if __name__ == "__main__":
